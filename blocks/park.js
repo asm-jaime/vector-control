@@ -1,15 +1,39 @@
 'use strict';
 
-export const park = (Isa, Isb, ph) => {
-  const result = {Isd: 0, Isq: 0};
-  result.Isd = Isa*Math.cos(ph)+Isb*Math.sin(ph);
-  result.Isq = Isb*Math.cos(ph)-Isa*Math.sin(ph);
-  return result;
-};
+export class park {//{{{
+  constructor(Isa, Isb, ph) {
+    this.Isa = Isa;
+    this.Isb = Isb;
+    this.ph = ph;
+    this.Isd = 0;
+    this.Isq = 0;
+  }
 
-export const ipark = (Isd, Isq, ph) => {
-  const result = {Isa: 0, Isb: 0};
-  result.Isa = Isd*Math.cos(ph)-Isq*Math.sin(ph);
-  result.Isb = Isd*Math.sin(ph)+Isq*Math.cos(ph);
-  return result;
-};
+  resolve() {
+    this.Isd = this.Isa * Math.cos(this.ph) + this.Isb * Math.sin(this.ph);
+    this.Isq = this.Isb * Math.cos(this.ph) - this.Isa * Math.sin(this.ph);
+  }
+
+  result() {
+    return {Isd: this.Isd, Isq: this.Isq};
+  }
+}//}}}
+
+export class ipark {//{{{
+  constructor(Isd, Isq, ph) {
+    this.Isd = Isd;
+    this.Isq = Isq;
+    this.ph = ph;
+    this.Isa = 0;
+    this.Isb = 0;
+  }
+
+  resolve() {
+    this.Isa = this.Isd * Math.cos(this.ph) - this.Isq * Math.sin(this.ph);
+    this.Isb = this.Isd * Math.sin(this.ph) + this.Isq * Math.cos(this.ph);
+  }
+
+  result() {
+    return {Isa: this.Isa, Isb: this.Isb};
+  }
+}//}}}
