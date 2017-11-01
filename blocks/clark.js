@@ -1,39 +1,45 @@
 'use strict';
 
-export class clark {//{{{
+export class clark { //{{{
   constructor(IsA, IsB) {
-    this.IsA = IsA;
-    this.IsB = IsB;
-    this.Isa = 0;
-    this.Isb = 0;
+    this.in = Object.create(null);
+    this.in.IsA = IsA;
+    this.in.IsB = IsB;
+
+    this.out = Object.create(null);
+    this.out.Isa = 0;
+    this.out.Isb = 0;
   }
 
   resolve() {
-    this.Isa = this.IsA;
-    this.Isb = 1 / Math.sqrt(3) * (this.IsA + 2 * this.IsB);
+    this.out.Isa = this.in.IsA;
+    this.out.Isb = 1 / Math.sqrt(3) * (this.in.IsA + 2 * this.in.IsB);
   }
 
   result() {
-    return {Isa: this.Isa, Isb: this.Isb};
+    return { Isa: this.out.Isa, Isb: this.out.Isb };
   }
-}//}}}
+} //}}}
 
-export class iclark {//{{{
+export class iclark { //{{{
   constructor(Isa, Isb) {
-    this.input.Isa = Isa;
-    this.input.Isb = Isb;
-    this.output.IsA = 0;
-    this.output.IsB = 0;
-    this.output.IsC = 0;
+    this.in = Object.create(null);
+    this.in.Isa = Isa;
+    this.in.Isb = Isb;
+
+    this.out = Object.create(null);
+    this.out.IsA = 0;
+    this.out.IsB = 0;
+    this.out.IsC = 0;
   }
 
   resolve() {
-    this.IsA = this.Isa;
-    this.IsB = (Math.sqrt(3) / 2) * this.Isb - (1 / 2) * this.Isa;
-    this.IsC = (-1 / 2) * this.Isa - (Math.sqrt(3) / 2) * this.Isb;
+    this.out.IsA = this.in.Isa;
+    this.out.IsB = (Math.sqrt(3) / 2) * this.in.Isb - (1 / 2) * this.in.Isa;
+    this.out.IsC = (-1 / 2) * this.in.Isa - (Math.sqrt(3) / 2) * this.in.Isb;
   }
 
   result() {
-    return {IsA: this.IsA, IsB: this.IsB, IsC: this.IsC};
+    return { IsA: this.out.IsA, IsB: this.out.IsB, IsC: this.out.IsC };
   }
-}//}}}
+} //}}}
