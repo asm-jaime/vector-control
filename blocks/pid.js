@@ -28,7 +28,7 @@ export class pid {
   }
 
   resolve() {
-    this.Err = this.reference - this.feedback;
+    this.Err = this.in.reference - this.in.feedback;
 
     this.Up = this.Kp * this.Err;
     this.Ui = this.Ui + this.Ki * this.Up + this.Kc * this.Satur_err;
@@ -49,6 +49,6 @@ export class pid {
   }
 
   result() {
-    return { res: this.out };
+    return { out: this.out };
   }
 }
