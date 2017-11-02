@@ -7,16 +7,20 @@ const expect = chai.expect;
 import { clark, iclark } from '../blocks/clark.js';
 import { park, ipark } from '../blocks/park.js';
 import { svgen_dq } from '../blocks/svgen_dq.js';
-import { ramp_gen } from '../blocks/ramp_gen.js';
+import { gen_ramp } from '../blocks/gen_ramp.js';
+import { gen_sin } from '../blocks/gen_sin.js';
+import { pid } from '../blocks/pid.js';
+
+import { output, line } from 'd3node-vilog';
 
 // ========== test clark
 
-const this_phase = {IsA: 0, IsB: 1, IsC: -1};
+const this_phase = { IsA: 0, IsB: 1, IsC: -1 };
 const this_dq = { Qs: 0.25, Ds: 0 };
 const ph = 1;
 
 describe('clark', function() { //{{{
-  it('clark+iclark', function() {
+  it.skip('clark+iclark', function() {
     const this_clark = new clark();
     this_clark.in.IsA = this_phase.IsA;
     this_clark.in.IsB = this_phase.IsB;
@@ -32,7 +36,7 @@ describe('clark', function() { //{{{
 }); //}}}
 
 describe('park', function() { //{{{
-  it('park+ipark', function() {
+  it.skip('park+ipark', function() {
     const this_clark = new clark(this_phase.IsA, this_phase.IsB);
     this_clark.resolve();
 
@@ -64,16 +68,51 @@ describe('space vector generator', function() { //{{{
   });
 }); //}}}
 
-describe('ramp generator', function() { //{{{
-  it.skip('ramp_gen', function() {
-    const this_ramp = new ramp_gen(1, 50);
+describe('generators', function() { //{{{
+  it.skip('gen_ramp', function() {
+    const this_ramp = new gen_ramp();
+    this_ramp.in.dt = 1;
+    this_ramp.in.freq = 50;
+    this_ramp.in.amplitude = 1;
 
     const log = [];
-    for(let dt = 0; dt < 100; ++dt){
+    for (let dt = 0; dt < 100; ++dt) {
       this_ramp.resolve();
-      log.push(this_ramp.result());
+      log.push({ key: dt, value: this_ramp.result().pos });
+    }
+    output('./tests/gen_ramp.log', line({ data: log }));
+  });
+
+  it.skip('gen_sin', function() {
+    const this_sin = new gen_sin(1, 50, 2);
+    const log = [];
+    for (let dt = 0; dt < 200; ++dt) {
+      this_sin.resolve();
+      log.push({ key: dt, value: this_sin.out });
+    }
+    output('./tests/gen_sin.log', line({ data: log }));
+  });
+}); //}}}
+
+describe('regulators', function() { //{{{
+  it('pid', function() {
+    const this_ramp = new gen_ramp();
+    this_ramp.in.dt = 1;
+    this_ramp.in.freq = 100;
+    this_ramp.in.amplitude = 1;
+
+    const this_pid = new pid();
+    this_pid.in.reference = 1;
+
+    const log = [];
+    for (let dt = 0; dt < 200; ++dt) {
+      this_ramp.resolve();
+
+      this_pid.in.feedback = this_ramp.result().pos;
+      this_pid.resolve();
+      log.push({ key: dt, value: this_pid.result().out });
     }
 
-    console.log(log);
+    output('./tests/pid.log', line({ data: log }));
   });
 }); //}}}
