@@ -9,6 +9,7 @@ import { park, ipark } from '../blocks/park.js';
 import { svgen_dq } from '../blocks/svgen_dq.js';
 import { gen_ramp } from '../blocks/gen_ramp.js';
 import { gen_sin } from '../blocks/gen_sin.js';
+import { gen_linear } from '../blocks/gen_linear.js';
 import { pid } from '../blocks/pid.js';
 
 import { output, line } from 'd3node-vilog';
@@ -91,6 +92,39 @@ describe('generators', function() { //{{{
       log.push({ key: dt, value: this_sin.out });
     }
     output('./tests/gen_sin.log', line({ data: log }));
+  });
+
+  it('gen_linear up and down', function() {
+    const this_linear = new gen_linear();
+    this_linear.in.points = [
+      { pos: 0, val: 5 },
+      { pos: 10, val: 10 },
+      { pos: 50, val: 15 },
+      { pos: 99, val: 10 },
+    ];
+    this_linear.in.dt = 1;
+
+    const log = [];
+    for (let dt = 0; dt < 100; ++dt) {
+      this_linear.resolve();
+      log.push({ key: dt, value: this_linear.result().out });
+    }
+    output('./tests/gen_linear_up_down.log', line({ data: log }));
+  });
+
+  it('gen_linear one', function() {
+    const this_linear = new gen_linear();
+    this_linear.in.points = [
+      { pos: 0, val: 5 },
+    ];
+    this_linear.in.dt = 1;
+
+    const log = [];
+    for (let dt = 0; dt < 10; ++dt) {
+      this_linear.resolve();
+      log.push({ key: dt, value: this_linear.result().out });
+    }
+    output('./tests/gen_linear_one.log', line({ data: log }));
   });
 }); //}}}
 
